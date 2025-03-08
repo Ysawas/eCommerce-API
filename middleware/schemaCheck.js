@@ -1,5 +1,6 @@
 import ExtendedError from "../errorManagement/ExtendedError.js";
-import userSchema from "../joiSchemas/userSchema.js";
+import { categorySchema } from "../joiSchemas/categorySchema.js";
+import { userSchema } from "../joiSchemas/userSchema.js";
 
 export const userBody = async (req, res, next) => {
   const {
@@ -10,6 +11,20 @@ export const userBody = async (req, res, next) => {
       firstName,
       lastName,
       email,
+    });
+    next();
+  } catch (err) {
+    next(new ExtendedError(400, err.message));
+  }
+};
+
+export const categoryBody = async (req, res, next) => {
+  const {
+    body: { name },
+  } = req;
+  try {
+    const value = await categorySchema.validateAsync({
+      name,
     });
     next();
   } catch (err) {

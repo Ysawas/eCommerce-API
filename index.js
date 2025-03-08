@@ -1,6 +1,7 @@
 import express from "express";
 import errorHandler from "./errorManagement/errorHandler.js";
 import userRouter from "./routers/userRouter.js";
+import categoryRouter from "./routers/categoryRouter.js";
 
 //Start the express app
 const app = express();
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 }); */
 
 app.use("/users", userRouter);
+app.use("categories", categoryRouter);
 
 app.use(errorHandler);
 
