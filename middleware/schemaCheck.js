@@ -1,6 +1,6 @@
 import ExtendedError from "../errorManagement/ExtendedError.js";
-import { categorySchema } from "../joiSchemas/categorySchema.js";
-import { userSchema } from "../joiSchemas/userSchema.js";
+import userSchema from "../joiSchemas/userSchema.js";
+import categorySchema from "../joiSchemas/categorySchema.js";
 
 export const userBody = async (req, res, next) => {
   const {

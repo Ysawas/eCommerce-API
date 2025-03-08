@@ -1,5 +1,5 @@
-import Category from "../models/Category";
-import ExtendedError from "../errorManagement/ExtendedError";
+import Category from "../models/Category.js";
+import ExtendedError from "../errorManagement/ExtendedError.js";
 
 export const getCategories = async (req, res) => {
   const categories = await Category.findAll();
