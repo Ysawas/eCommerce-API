@@ -1,25 +1,16 @@
-const { Sequelize } = require('sequelize');
 require('dotenv').config();
+const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(process.env.PG_URI, {
+const sequelize = new Sequelize(process.env.PGDATABASE, process.env.PGUSER, process.env.PGPASSWORD, {
+  host: process.env.PGHOST,
   dialect: 'postgres',
-  dialectOptions: {
+  dialectOptions: { // This part might be needed for Neon
     ssl: {
       require: true,
-      rejectUnauthorized: false, // For development; in production, set this to true
-    },
+      rejectUnauthorized: false // Use with caution, see Neon docs
+    }
   },
+  logging: false, // Disable logging SQL queries to the console (optional)
 });
 
-async function connectToDatabase() {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connection has been established successfully.');
-    await sequelize.sync({ alter: true }); // Use alter in dev, not in prod.
-    console.log('Database synchronized');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-}
-
-module.exports = { sequelize, connectToDatabase };
+module.exports = sequelize;
