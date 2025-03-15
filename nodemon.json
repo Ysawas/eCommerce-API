@@ -1,0 +1,5 @@
+{
+    "watch": ["controllers", "routers", "models"],
+    "ext": "js,json",
+    "exec": "node --es-module-specifier-resolution=node index.js"
+  }

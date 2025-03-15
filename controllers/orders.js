@@ -1,19 +1,19 @@
-const Order = require('../models/Order');
-const Product = require('../models/Product');
-const User = require('../models/User');
-const OrderProduct = require('../models/OrderProduct');
-const { sequelize } = require('../db');
+import Order from '../models/Order.js';
+import Product from '../models/Product.js';
+import User from '../models/User.js';
+import OrderProduct from '../models/OrderProduct.js';
+import sequelize from '../db/index.js';
 
-async function getAllOrders(req, res, next) {
+export const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.findAll();
     res.json(orders);
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function getOrderById(req, res, next) {
+export const getOrderById = async (req, res, next) => {
   try {
     const order = await Order.findByPk(req.params.id);
     if (!order) {
@@ -23,9 +23,9 @@ async function getOrderById(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function createOrder(req, res, next) {
+export const createOrder = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const { userId, products } = req.body;
@@ -39,7 +39,9 @@ async function createOrder(req, res, next) {
     for (const productInfo of products) {
       const product = await Product.findByPk(productInfo.productId);
       if (!product) {
-        return res.status(400).json({ message: `Product with ID ${productInfo.productId} not found` });
+        return res
+          .status(400)
+          .json({ message: `Product with ID ${productInfo.productId} not found` });
       }
       total += product.price * productInfo.quantity;
     }
@@ -47,22 +49,25 @@ async function createOrder(req, res, next) {
     const order = await Order.create({ userId, total }, { transaction: t });
 
     for (const productInfo of products) {
-      await OrderProduct.create({
-        orderId: order.id,
-        productId: productInfo.productId,
-        quantity: productInfo.quantity,
-      }, { transaction: t });
+      await OrderProduct.create(
+        {
+          orderId: order.id,
+          productId: productInfo.productId,
+          quantity: productInfo.quantity,
+        },
+        { transaction: t }
+      );
     }
 
     await t.commit();
     res.status(201).json(order);
   } catch (error) {
-      await t.rollback();
+    await t.rollback();
     next(error);
   }
-}
+};
 
-async function updateOrder(req, res, next) {
+export const updateOrder = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const { userId, products } = req.body;
@@ -86,14 +91,19 @@ async function updateOrder(req, res, next) {
       for (const productInfo of products) {
         const product = await Product.findByPk(productInfo.productId);
         if (!product) {
-          return res.status(400).json({ message: `Product with ID ${productInfo.productId} not found` });
+          return res
+            .status(400)
+            .json({ message: `Product with ID ${productInfo.productId} not found` });
         }
         total += product.price * productInfo.quantity;
-        await OrderProduct.create({
-          orderId: order.id,
-          productId: productInfo.productId,
-          quantity: productInfo.quantity,
-        }, { transaction: t });
+        await OrderProduct.create(
+          {
+            orderId: order.id,
+            productId: productInfo.productId,
+            quantity: productInfo.quantity,
+          },
+          { transaction: t }
+        );
       }
       order.total = total;
     }
@@ -105,9 +115,9 @@ async function updateOrder(req, res, next) {
     await t.rollback();
     next(error);
   }
-}
+};
 
-async function deleteOrder(req, res, next) {
+export const deleteOrder = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const order = await Order.findByPk(req.params.id);
@@ -123,12 +133,4 @@ async function deleteOrder(req, res, next) {
     await t.rollback();
     next(error);
   }
-}
-
-module.exports = {
-  getAllOrders,
-  getOrderById,
-  createOrder,
-  updateOrder,
-  deleteOrder,
 };

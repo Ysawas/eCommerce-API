@@ -31,6 +31,6 @@ const User = sequelize.define("User", {
 });
 
 // Sync database
-sequelize.sync();
+// sequelize.sync(); // You might want to handle this in index.js
 
 export default User;

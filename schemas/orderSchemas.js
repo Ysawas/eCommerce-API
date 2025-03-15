@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const orderProductSchema = Joi.object({
   productId: Joi.number().integer().required(),
@@ -15,7 +15,7 @@ const updateOrderSchema = Joi.object({
   products: Joi.array().items(orderProductSchema).min(1),
 });
 
-function validateOrder(req, res, next) {
+export function validateOrder(req, res, next) {
   const { error } = orderSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -23,7 +23,7 @@ function validateOrder(req, res, next) {
   next();
 }
 
-function validateUpdateOrder(req, res, next) {
+export function validateUpdateOrder(req, res, next) {
   const { error } = updateOrderSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -31,7 +31,4 @@ function validateUpdateOrder(req, res, next) {
   next();
 }
 
-module.exports = {
-  validateOrder,
-  validateUpdateOrder,
-};
+export { orderSchema, updateOrderSchema };

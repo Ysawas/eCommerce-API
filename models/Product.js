@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../db/index'); // Adjust path if needed
-const Category = require('./Category'); // Import Category for association
+import { DataTypes } from 'sequelize';
+import sequelize from '../db/index.js';
+import Category from './Category.js'; // Import Category for association
 
 const Product = sequelize.define('Product', {
   id: {
@@ -23,10 +23,11 @@ const Product = sequelize.define('Product', {
   categoryId: {
     type: DataTypes.INTEGER,
     allowNull: false, // Ensure categoryId is provided
-    references: { //Explicitly define the foreign key relationship
-        model: 'Categories',
-        key: 'id'
-    }
+    references: {
+      //Explicitly define the foreign key relationship
+      model: 'Categories',
+      key: 'id',
+    },
   },
 }, {
     timestamps: true
@@ -34,6 +35,6 @@ const Product = sequelize.define('Product', {
 
 // Define the association: A Product belongs to a Category
 Product.belongsTo(Category, { foreignKey: 'categoryId' });
-Category.hasMany(Product, {foreignKey: 'categoryId'});
+Category.hasMany(Product, { foreignKey: 'categoryId' });
 
-module.exports = Product;
+export default Product;

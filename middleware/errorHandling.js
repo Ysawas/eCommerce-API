@@ -1,6 +1,7 @@
-function errorHandler(err, req, res, next) {
-    console.error(err.stack); // Log the error stack for debugging
-    res.status(500).json({ error: 'Internal server error' });
+export default function errorHandler(err, req, res, next) {
+  console.error(err.stack);
+  if (res.headersSent) {
+    return next(err);
   }
-  
-  module.exports = errorHandler;
+  res.status(500).json({ error: err.message || 'Internal server error' });
+}
